@@ -59,10 +59,10 @@ public class GUI implements ActionListener {
         timeLabel.setText(secToMin(remTime));
         timeLabel.setFont(new Font("serif", Font.PLAIN, 80));
         timerBtn.setText("Start");
-        timerBtn.addActionListener(this);
-        resetBtn.addActionListener(this);
         resetBtn.setText("Reset");
         resetBtn.setEnabled(false);
+        timerBtn.addActionListener(this);
+        resetBtn.addActionListener(this);
 
         // center main panel components
         sessionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -103,7 +103,7 @@ public class GUI implements ActionListener {
                         else          startWork();
                     }
                 }
-            }, 0, 1000);
+            }, 1000, 1000);
         }
 
         public void updateTimer() {
