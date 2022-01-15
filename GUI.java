@@ -183,7 +183,7 @@ public class GUI implements ActionListener {
      * Returns a String representing minutes and seconds from the given number of
      * seconds 
      */
-    private String secToMin(int n) {
+    private static String secToMin(int n) {
         String mins = Integer.toString(n / 60);
         String secs = Integer.toString(n % 60);
 
