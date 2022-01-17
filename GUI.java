@@ -59,10 +59,10 @@ public class GUI implements ActionListener {
         timeLabel.setText(secToMin(remTime));
         timeLabel.setFont(new Font("serif", Font.PLAIN, 80));
         timerBtn.setText("Start");
-        timerBtn.addActionListener(this);
-        resetBtn.addActionListener(this);
         resetBtn.setText("Reset");
         resetBtn.setEnabled(false);
+        timerBtn.addActionListener(this);
+        resetBtn.addActionListener(this);
 
         // center main panel components
         sessionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -103,7 +103,7 @@ public class GUI implements ActionListener {
                         else          startWork();
                     }
                 }
-            }, 0, 1000);
+            }, 1000, 1000);
         }
 
         public void updateTimer() {
@@ -183,7 +183,7 @@ public class GUI implements ActionListener {
      * Returns a String representing minutes and seconds from the given number of
      * seconds 
      */
-    private String secToMin(int n) {
+    private static String secToMin(int n) {
         String mins = Integer.toString(n / 60);
         String secs = Integer.toString(n % 60);
 
@@ -198,7 +198,7 @@ public class GUI implements ActionListener {
      */
     public static void makeSound() {
         try {
-            File f = new File("media/error.wav");
+            File f = new File("media/ding.wav");
             AudioInputStream ais = AudioSystem.getAudioInputStream(f);
             AudioFormat format = ais.getFormat();
             Clip clip = (Clip) AudioSystem.getLine(new DataLine.Info(Clip.class, format));
