@@ -198,7 +198,7 @@ public class GUI implements ActionListener {
      */
     public static void makeSound() {
         try {
-            File f = new File("media/ding.wav");
+            File f = new File("../media/ding.wav");
             AudioInputStream ais = AudioSystem.getAudioInputStream(f);
             AudioFormat format = ais.getFormat();
             Clip clip = (Clip) AudioSystem.getLine(new DataLine.Info(Clip.class, format));
