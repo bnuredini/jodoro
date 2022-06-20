@@ -1,9 +1,12 @@
 import javax.swing.*;
 import javax.sound.sampled.*;
+
 import java.awt.*;
 import java.awt.event.*;
+
 import java.util.Timer;
 import java.util.TimerTask;
+
 import java.io.*;
 
 public class GUI implements ActionListener {
@@ -31,9 +34,9 @@ public class GUI implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // temporary values
-        workLength = 5;
-        breakLength = 4;
-        longBreakLength = 5;
+        workLength = 60 * 60;
+        breakLength = 10 * 60;
+        longBreakLength = 3 * breakLength;
         remTime = workLength;
 
         // settings panel
