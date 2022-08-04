@@ -25,7 +25,7 @@ public class GUI implements ActionListener {
     private int longBreakLength = 3 * breakLength;
     private int remTime = workLength;
 
-    private PomoTimer t = new PomoTimer();
+    private PomodoroTimer t = new PomodoroTimer();
     private int workNum = 1;
     private boolean onBreak = false;
 
@@ -89,7 +89,7 @@ public class GUI implements ActionListener {
         frame.setVisible(true);
     }
 
-    class PomoTimer {
+    class PomodoroTimer {
         private Timer timer;
 
         private void startTimer() {
