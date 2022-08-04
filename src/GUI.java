@@ -11,13 +11,15 @@ import java.io.*;
 
 public class GUI implements ActionListener {
 
+    private JPanel settingsBottomPanel = new JPanel();
+    private JCheckBox showSettingsCheckBox = new JCheckBox();
     private JTextField workLengthField = new JTextField();
     private JTextField breakLengthField = new JTextField();
     private JTextField longBreakLengthField = new JTextField();
     private JButton setBtn = new JButton();
     private JLabel sessionLabel = new JLabel();
     private JLabel timeLabel = new JLabel();
-    private JButton timerBtn = new JButton();
+    private JButton timerBtn = new JButton(); // Start/Stop button
     private JButton resetBtn = new JButton();
 
     private int workLength = 30 * 60;
@@ -25,13 +27,14 @@ public class GUI implements ActionListener {
     private int longBreakLength = 3 * breakLength;
     private int remTime = workLength;
 
-    private PomodoroTimer t = new PomodoroTimer();
+    private PomodoroTimer pomodoroTimer = new PomodoroTimer();
     private int workNum = 1;
     private boolean onBreak = false;
 
     public GUI() {
         JFrame frame = new JFrame("jodoro");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(350, 600);
 
         // temporary values
         workLength = 60 * 60;
@@ -39,23 +42,33 @@ public class GUI implements ActionListener {
         longBreakLength = 3 * breakLength;
         remTime = workLength;
 
-        // settings panel
+        // customizing components of settings panel
+        showSettingsCheckBox.setText("Show advanced settings");
+        showSettingsCheckBox.addActionListener(this);
         workLengthField.setPreferredSize(new Dimension(100, 25));
         breakLengthField.setPreferredSize(new Dimension(100, 25));
         longBreakLengthField.setPreferredSize(new Dimension(100, 25));
         setBtn.setText("Set");
         setBtn.addActionListener(this);
-        
+
+        JPanel settingsTopPanel = new JPanel();
+        settingsTopPanel.add(showSettingsCheckBox);
+
+        settingsBottomPanel.setVisible(false);
+        settingsBottomPanel.setLayout(new BoxLayout(settingsBottomPanel, BoxLayout.PAGE_AXIS));
+        settingsBottomPanel.add(new JLabel("Work session length: "));
+        settingsBottomPanel.add(workLengthField);
+        settingsBottomPanel.add(new JLabel("Break session length: "));
+        settingsBottomPanel.add(breakLengthField);
+        settingsBottomPanel.add(new JLabel("Long break session length: "));
+        settingsBottomPanel.add(longBreakLengthField);
+        settingsBottomPanel.add(setBtn);
+
         JPanel settingsPanel = new JPanel();
         settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.PAGE_AXIS));
         settingsPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
-        settingsPanel.add(new JLabel("Work session length: "));
-        settingsPanel.add(workLengthField);
-        settingsPanel.add(new JLabel("Break session length: "));
-        settingsPanel.add(breakLengthField);
-        settingsPanel.add(new JLabel("Long break session length: "));
-        settingsPanel.add(longBreakLengthField);
-        settingsPanel.add(setBtn);
+        settingsPanel.add(settingsTopPanel);
+        settingsPanel.add(settingsBottomPanel);
 
         // main panel
         sessionLabel.setText("Work (1/4)");
@@ -84,8 +97,6 @@ public class GUI implements ActionListener {
         // add panels
         frame.getContentPane().add(BorderLayout.NORTH, settingsPanel);
         frame.getContentPane().add(BorderLayout.CENTER, mainPanel);
-
-        frame.setSize(350, 500);
         frame.setVisible(true);
     }
 
@@ -109,13 +120,13 @@ public class GUI implements ActionListener {
             }, 1000, 1000);
         }
 
-        public void updateTimer() {
+        public void updateTimeLabel() {
             timeLabel.setText(secToMin(remTime));
         }
 
         public void setTime(int t) {
             remTime = t;
-            updateTimer();
+            updateTimeLabel();
         }
 
         private void pauseTimer() {
@@ -131,7 +142,7 @@ public class GUI implements ActionListener {
             sessionLabel.setText("Work (1/4)");
 
             if (timer != null) timer.cancel();
-            updateTimer();
+            updateTimeLabel();
         }
 
         public void startBreak() {
@@ -163,22 +174,24 @@ public class GUI implements ActionListener {
         if (e.getSource() == timerBtn) {
             if (timerBtn.getText().equals("Start")) {
                 timerBtn.setText("Pause");
-                t.startTimer();
+                pomodoroTimer.startTimer();
             } else {
                 timerBtn.setText("Start");
-                t.pauseTimer();
+                pomodoroTimer.pauseTimer();
             }
 
             resetBtn.setEnabled(true);
+        } else if (e.getSource() == showSettingsCheckBox) {
+            settingsBottomPanel.setVisible(showSettingsCheckBox.isSelected());
         } else if (e.getSource() == setBtn) {
             workLength      = Integer.parseInt(workLengthField.getText());
             breakLength     = Integer.parseInt(breakLengthField.getText());
             longBreakLength = Integer.parseInt(longBreakLengthField.getText());
             remTime         = workLength;
 
-            t.updateTimer();
+            pomodoroTimer.updateTimeLabel();
         } else if (e.getSource() == resetBtn) {
-            t.resetTimer();
+            pomodoroTimer.resetTimer();
         }
     }
 
