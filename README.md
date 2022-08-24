@@ -1,4 +1,5 @@
 # jodoro
+A pomodoro desktop application.
 
 ## building locally
 Create the `out` directory
@@ -17,10 +18,10 @@ java -jar jodoro.jar
 
 
 ## to do
-* add app icon
 * timer should only switch state w/ user interaction
-* hide settings on startup
-* declutter gui constructor
-* create gap between text fields
-* save data
+* keyboard shortcuts (lots of them)
+* de-clutter gui constructor
 * graphs for # of sessions 
+* add input field validation
+* add app icon
+ 
