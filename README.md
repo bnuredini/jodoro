@@ -7,7 +7,7 @@ Create the `out` directory
 mkdir out && cd out
 ```
 
-here you'll put the `.class` files and crate the JAR file
+here you'll put the `.class` files and create the JAR file.
 
 ```
 javac -d . ../src/*.java
