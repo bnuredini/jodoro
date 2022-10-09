@@ -101,14 +101,19 @@ public class GUI implements ActionListener {
     }
 
     class PomodoroTimer {
-        private Timer timer;
+        private Timer timer; // TODO: make this public
+
+        public Timer getInternalTimer() {
+            return timer;
+        }
 
         private void startTimer() {
             timer = new Timer();
 
             timer.scheduleAtFixedRate(new TimerTask() {
                 public void run() {
-                    setTime(remTime - 1);
+                    remTime = remTime - 1;
+                    timeLabel.setText(secToMin(remTime));
 
                     if (remTime <= 0) {
                         timer.cancel();
@@ -120,19 +125,6 @@ public class GUI implements ActionListener {
             }, 1000, 1000);
         }
 
-        public void updateTimeLabel() {
-            timeLabel.setText(secToMin(remTime));
-        }
-
-        public void setTime(int t) {
-            remTime = t;
-            updateTimeLabel();
-        }
-
-        private void pauseTimer() {
-            timer.cancel();
-        }
-
         private void resetTimer() {
             if (timerBtn.getText().equals("Pause")) timerBtn.setText("Start");
 
@@ -142,17 +134,20 @@ public class GUI implements ActionListener {
             sessionLabel.setText("Work (1/4)");
 
             if (timer != null) timer.cancel();
-            updateTimeLabel();
+            timeLabel.setText(secToMin(remTime));
         }
 
         public void startBreak() {
             if (workNum == 4) {
                 sessionLabel.setText("Long Break");
                 workNum = 0;
-                setTime(longBreakLength);
+
+                remTime = longBreakLength;
+                timeLabel.setText(secToMin(remTime));
             } else {
                 sessionLabel.setText("Break");
-                setTime(breakLength);
+                remTime = breakLength;
+                timeLabel.setText(secToMin(remTime));
             }
 
             onBreak = true;
@@ -162,7 +157,8 @@ public class GUI implements ActionListener {
 
         public void startWork() {
             sessionLabel.setText("Work (" + (++workNum) + "/4)");
-            setTime(workLength);
+            remTime = workLength;
+            timeLabel.setText(secToMin(remTime));
 
             onBreak = false;
             makeSound();
@@ -177,7 +173,7 @@ public class GUI implements ActionListener {
                 pomodoroTimer.startTimer();
             } else {
                 timerBtn.setText("Start");
-                pomodoroTimer.pauseTimer();
+                pomodoroTimer.getInternalTimer().cancel();
             }
 
             resetBtn.setEnabled(true);
@@ -189,7 +185,7 @@ public class GUI implements ActionListener {
             longBreakLength = Integer.parseInt(longBreakLengthField.getText());
             remTime         = workLength;
 
-            pomodoroTimer.updateTimeLabel();
+            timeLabel.setText(secToMin(remTime));
         } else if (e.getSource() == resetBtn) {
             pomodoroTimer.resetTimer();
         }
