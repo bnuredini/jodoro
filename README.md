@@ -24,4 +24,6 @@ java -jar jodoro.jar
 * graphs for # of sessions 
 * add input field validation
 * add app icon
+* use maven
+* add icons for play & pause buttons
  
