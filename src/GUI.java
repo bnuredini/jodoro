@@ -11,23 +11,23 @@ import java.io.*;
 
 public class GUI implements ActionListener {
 
-    private JPanel settingsBottomPanel = new JPanel();
-    private JCheckBox showSettingsCheckBox = new JCheckBox();
-    private JTextField workLengthField = new JTextField();
-    private JTextField breakLengthField = new JTextField();
-    private JTextField longBreakLengthField = new JTextField();
-    private JButton setBtn = new JButton();
-    private JLabel sessionLabel = new JLabel();
-    private JLabel timeLabel = new JLabel();
-    private JButton timerBtn = new JButton(); // Start/Stop button
-    private JButton resetBtn = new JButton();
+    private final JPanel settingsBottomPanel = new JPanel();
+    private final JCheckBox showSettingsCheckBox = new JCheckBox();
+    private final JTextField workLengthField = new JTextField();
+    private final JTextField breakLengthField = new JTextField();
+    private final JTextField longBreakLengthField = new JTextField();
+    private final JButton setBtn = new JButton();
+    private final JLabel sessionLabel = new JLabel();
+    private final JLabel timeLabel = new JLabel();
+    private final JButton timerBtn = new JButton(); // Start/Stop button
+    private final JButton resetBtn = new JButton();
 
     private int workLength = 30 * 60;
     private int breakLength = 5 * 60;
     private int longBreakLength = 3 * breakLength;
     private int remTime = workLength;
 
-    private PomodoroTimer pomodoroTimer = new PomodoroTimer();
+    private final PomodoroTimer pomodoroTimer = new PomodoroTimer();
     private int workNum = 1;
     private boolean onBreak = false;
 
