@@ -192,8 +192,8 @@ public class GUI implements ActionListener {
     }
 
     /**
-     * Returns a String representing minutes and seconds from the given number of
-     * seconds 
+     * Returns a {@code String} representing minutes and seconds from the given number of
+     * seconds.
      */
     private static String secToMin(int n) {
         String mins = Integer.toString(n / 60);
@@ -206,7 +206,7 @@ public class GUI implements ActionListener {
     }
 
     /**
-     * Plays the default audio file
+     * Plays the default audio file.
      */
     public static void makeSound() {
         try {
