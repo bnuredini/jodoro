@@ -9,7 +9,7 @@ import java.util.TimerTask;
 
 import java.io.*;
 
-public class GUI implements ActionListener {
+public class GUI {
 
     private final JPanel settingsBottomPanel = new JPanel();
     private final JCheckBox showSettingsCheckBox = new JCheckBox();
@@ -36,20 +36,14 @@ public class GUI implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(350, 600);
 
-        // temporary values
-        workLength = 60 * 60;
-        breakLength = 10 * 60;
-        longBreakLength = 3 * breakLength;
-        remTime = workLength;
-
         // customizing components of settings panel
         showSettingsCheckBox.setText("Show advanced settings");
-        showSettingsCheckBox.addActionListener(this);
+        showSettingsCheckBox.addActionListener(actionListener);
         workLengthField.setPreferredSize(new Dimension(100, 25));
         breakLengthField.setPreferredSize(new Dimension(100, 25));
         longBreakLengthField.setPreferredSize(new Dimension(100, 25));
         setBtn.setText("Set");
-        setBtn.addActionListener(this);
+        setBtn.addActionListener(actionListener);
 
         JPanel settingsTopPanel = new JPanel();
         settingsTopPanel.add(showSettingsCheckBox);
@@ -77,8 +71,8 @@ public class GUI implements ActionListener {
         timerBtn.setText("Start");
         resetBtn.setText("Reset");
         resetBtn.setEnabled(false);
-        timerBtn.addActionListener(this);
-        resetBtn.addActionListener(this);
+        timerBtn.addActionListener(actionListener);
+        resetBtn.addActionListener(actionListener);
 
         // center main panel components
         sessionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -166,7 +160,7 @@ public class GUI implements ActionListener {
         }
     }
 
-    public void actionPerformed(ActionEvent e) {
+    public ActionListener actionListener = (ActionEvent e) -> {
         if (e.getSource() == timerBtn) {
             if (timerBtn.getText().equals("Start")) {
                 timerBtn.setText("Pause");
@@ -180,16 +174,16 @@ public class GUI implements ActionListener {
         } else if (e.getSource() == showSettingsCheckBox) {
             settingsBottomPanel.setVisible(showSettingsCheckBox.isSelected());
         } else if (e.getSource() == setBtn) {
-            workLength      = Integer.parseInt(workLengthField.getText());
-            breakLength     = Integer.parseInt(breakLengthField.getText());
+            workLength = Integer.parseInt(workLengthField.getText());
+            breakLength = Integer.parseInt(breakLengthField.getText());
             longBreakLength = Integer.parseInt(longBreakLengthField.getText());
-            remTime         = workLength;
+            remTime = workLength;
 
             timeLabel.setText(secToMin(remTime));
         } else if (e.getSource() == resetBtn) {
             pomodoroTimer.resetTimer();
         }
-    }
+    };
 
     /**
      * Returns a {@code String} representing minutes and seconds from the given number of
@@ -223,6 +217,6 @@ public class GUI implements ActionListener {
     }
 
     public static void main(String[] args) {
-       new GUI();
+        new GUI();
     }
 }
