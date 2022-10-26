@@ -2,4 +2,5 @@ out/
 tmp/
 *.class
 *.iml
+.idea/
 .DS_Store
