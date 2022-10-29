@@ -16,7 +16,7 @@ public class GUI {
     private final JTextField workLengthField = new JTextField();
     private final JTextField breakLengthField = new JTextField();
     private final JTextField longBreakLengthField = new JTextField();
-    private final JButton setBtn = new JButton();
+    private final JButton setSettingsBtn = new JButton();
     private final JLabel sessionLabel = new JLabel();
     private final JLabel timeLabel = new JLabel();
     private final JButton timerBtn = new JButton(); // Start/Stop button
@@ -42,8 +42,8 @@ public class GUI {
         workLengthField.setPreferredSize(new Dimension(100, 25));
         breakLengthField.setPreferredSize(new Dimension(100, 25));
         longBreakLengthField.setPreferredSize(new Dimension(100, 25));
-        setBtn.setText("Set");
-        setBtn.addActionListener(actionListener);
+        setSettingsBtn.setText("Set");
+        setSettingsBtn.addActionListener(actionListener);
 
         JPanel settingsTopPanel = new JPanel();
         settingsTopPanel.add(showSettingsCheckBox);
@@ -56,7 +56,7 @@ public class GUI {
         settingsBottomPanel.add(breakLengthField);
         settingsBottomPanel.add(new JLabel("Long break session length: "));
         settingsBottomPanel.add(longBreakLengthField);
-        settingsBottomPanel.add(setBtn);
+        settingsBottomPanel.add(setSettingsBtn);
 
         JPanel settingsPanel = new JPanel();
         settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.PAGE_AXIS));
@@ -95,10 +95,10 @@ public class GUI {
     }
 
     class PomodoroTimer {
-        private Timer timer; // TODO: make this public
+        public Timer timer; // TODO: make this public
 
-        public Timer getInternalTimer() {
-            return timer;
+        public void cancel() {
+            timer.cancel();
         }
 
         private void startTimer() {
@@ -111,9 +111,13 @@ public class GUI {
 
                     if (remTime <= 0) {
                         timer.cancel();
+                        timerBtn.setText("Start");
 
-                        if (!onBreak) startBreak();
-                        else          startWork();
+                        if (!onBreak) {
+                            setupBreak();
+                        }  else {
+                            setupWork();
+                        }
                     }
                 }
             }, 1000, 1000);
@@ -131,32 +135,29 @@ public class GUI {
             timeLabel.setText(secToMin(remTime));
         }
 
-        public void startBreak() {
+        public void setupBreak() {
             if (workNum == 4) {
                 sessionLabel.setText("Long Break");
                 workNum = 0;
-
                 remTime = longBreakLength;
-                timeLabel.setText(secToMin(remTime));
             } else {
                 sessionLabel.setText("Break");
                 remTime = breakLength;
-                timeLabel.setText(secToMin(remTime));
             }
+
+            timeLabel.setText(secToMin(remTime));
 
             onBreak = true;
             makeSound();
-            startTimer();
         }
 
-        public void startWork() {
+        public void setupWork() {
             sessionLabel.setText("Work (" + (++workNum) + "/4)");
             remTime = workLength;
             timeLabel.setText(secToMin(remTime));
 
             onBreak = false;
             makeSound();
-            startTimer();
         }
     }
 
@@ -167,13 +168,13 @@ public class GUI {
                 pomodoroTimer.startTimer();
             } else {
                 timerBtn.setText("Start");
-                pomodoroTimer.getInternalTimer().cancel();
+                pomodoroTimer.cancel();
             }
 
             resetBtn.setEnabled(true);
         } else if (e.getSource() == showSettingsCheckBox) {
             settingsBottomPanel.setVisible(showSettingsCheckBox.isSelected());
-        } else if (e.getSource() == setBtn) {
+        } else if (e.getSource() == setSettingsBtn) {
             workLength = Integer.parseInt(workLengthField.getText());
             breakLength = Integer.parseInt(breakLengthField.getText());
             longBreakLength = Integer.parseInt(longBreakLengthField.getText());
