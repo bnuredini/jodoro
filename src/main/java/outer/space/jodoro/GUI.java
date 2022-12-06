@@ -1,3 +1,5 @@
+package outer.space.jodoro;
+
 import javax.swing.*;
 import javax.sound.sampled.*;
 
