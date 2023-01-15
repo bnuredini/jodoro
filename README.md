@@ -2,18 +2,16 @@
 A pomodoro desktop application.
 
 ## building locally
-Create the `out` directory
+Create the `target` directory
 
 ```
-mkdir out && cd out
+mvn package
 ```
 
-here you'll put the `.class` files and crate the JAR file
+then you can run the JAR
 
 ```
-javac -d . ../src/*.java
-jar cfm jodoro.jar ../META-INF/MANIFEST.mf *.class ../media/*
-java -jar jodoro.jar
+java -jar target/jodoro-<version>.jar
 ```
 
 
@@ -26,4 +24,4 @@ java -jar jodoro.jar
 * add app icon
 * use maven
 * add icons for play & pause buttons
- 
+* add quick settings in settings pane
