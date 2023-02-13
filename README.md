@@ -16,11 +16,11 @@ java -jar target/jodoro-<version>.jar
 
 
 ## to do
-* timer should only switch state w/ user interaction
 * keyboard shortcuts (lots of them)
 * de-clutter gui constructor
 * graphs for # of sessions 
 * add input field validation
+* fix bug occurring when input fields are modified on a running session
 * add app icon
 * use maven
 * add icons for play & pause buttons
