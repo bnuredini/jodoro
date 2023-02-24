@@ -1,5 +1,6 @@
 package outer.space.jodoro;
 
+import java.text.ParseException;
 import javax.swing.*;
 import javax.sound.sampled.*;
 
@@ -10,19 +11,23 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import java.io.*;
+import javax.swing.text.MaskFormatter;
 
 public class GUI {
 
     private final JPanel settingsBottomPanel = new JPanel();
     private final JCheckBox showSettingsCheckBox = new JCheckBox();
+
     private final JTextField workLengthField = new JTextField();
     private final JTextField breakLengthField = new JTextField();
     private final JTextField longBreakLengthField = new JTextField();
+
     private final JButton setSettingsBtn = new JButton();
-    private final JLabel sessionLabel = new JLabel();
-    private final JLabel timeLabel = new JLabel();
     private final JButton timerBtn = new JButton(); // Start/Stop button
     private final JButton resetBtn = new JButton();
+
+    private final JLabel sessionLabel = new JLabel();
+    private final JLabel timeLabel = new JLabel();
 
     private int workLength = 30 * 60;
     private int breakLength = 5 * 60;
@@ -33,6 +38,25 @@ public class GUI {
     private int workNum = 1;
     private boolean onBreak = false;
 
+    public static MaskFormatter formatter;
+
+    static {
+        // TODO: remove this
+        try {
+            formatter = new MaskFormatter("##:##");
+        } catch (ParseException e) {
+            System.out.println(
+                "ERROR: something went wrong while creating formatter: " +
+                    e.getMessage()
+            );
+            System.exit(-1);
+        }
+    }
+
+    /**
+     * Components have been setup in the order that they appear in the GUI so it's easier to
+     * visualize how everything will look like.
+     */
     public GUI() {
         JFrame frame = new JFrame("jodoro");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -41,6 +65,9 @@ public class GUI {
         // customizing components of settings panel
         showSettingsCheckBox.setText("Show advanced settings");
         showSettingsCheckBox.addActionListener(actionListener);
+
+        // TODO: add `MaskFormatter` to fields in settings pane
+
         workLengthField.setPreferredSize(new Dimension(100, 25));
         breakLengthField.setPreferredSize(new Dimension(100, 25));
         longBreakLengthField.setPreferredSize(new Dimension(100, 25));
@@ -50,6 +77,7 @@ public class GUI {
         JPanel settingsTopPanel = new JPanel();
         settingsTopPanel.add(showSettingsCheckBox);
 
+        // TODO: loop through components when adding them to panels
         settingsBottomPanel.setVisible(false);
         settingsBottomPanel.setLayout(new BoxLayout(settingsBottomPanel, BoxLayout.PAGE_AXIS));
         settingsBottomPanel.add(new JLabel("Work session length: "));
@@ -97,7 +125,10 @@ public class GUI {
     }
 
     class PomodoroTimer {
-        public Timer timer; // TODO: make this public
+
+        // TODO: make this public
+        // TODO: use `ScheduledExecutorService` instead
+        public Timer timer;
 
         public void cancel() {
             timer.cancel();
@@ -117,7 +148,7 @@ public class GUI {
 
                         if (!onBreak) {
                             setupBreak();
-                        }  else {
+                        } else {
                             setupWork();
                         }
                     }
@@ -126,14 +157,18 @@ public class GUI {
         }
 
         private void resetTimer() {
-            if (timerBtn.getText().equals("Pause")) timerBtn.setText("Start");
+            if (timerBtn.getText().equals("Pause")) {
+                timerBtn.setText("Start");
+            }
 
             remTime = workLength;
             workNum = 1;
             onBreak = false;
             sessionLabel.setText("Work (1/4)");
 
-            if (timer != null) timer.cancel();
+            if (timer != null) {
+                timer.cancel();
+            }
             timeLabel.setText(secToMin(remTime));
         }
 
@@ -189,15 +224,18 @@ public class GUI {
     };
 
     /**
-     * Returns a {@code String} representing minutes and seconds from the given number of
-     * seconds.
+     * Returns a {@code String} representing minutes and seconds from the given number of seconds.
      */
     private static String secToMin(int n) {
         String mins = Integer.toString(n / 60);
         String secs = Integer.toString(n % 60);
 
-        if (Integer.parseInt(mins) < 10) mins = "0" + mins;
-        if (Integer.parseInt(secs) < 10) secs = "0" + secs;
+        if (Integer.parseInt(mins) < 10) {
+            mins = "0" + mins;
+        }
+        if (Integer.parseInt(secs) < 10) {
+            secs = "0" + secs;
+        }
 
         return mins + ":" + secs;
     }
@@ -208,6 +246,19 @@ public class GUI {
     public static void makeSound() {
         try {
             File f = new File("./src/main/resources/ding.wav");
+            boolean runningClassDirectly = f.exists();
+
+            if (!runningClassDirectly) {
+
+                if ("/".equals(System.getProperty("user.dir"))) {
+                    // TODO: use a flag to determine OS
+                    f = new File("/Applications/jodoro.app/Contents/app/classes/ding.wav");
+                } else {
+                    System.out.println("Using ./classes/ding.wav");
+                    f = new File("./classes/ding.wav");
+                }
+            }
+
             AudioInputStream ais = AudioSystem.getAudioInputStream(f);
             AudioFormat format = ais.getFormat();
             Clip clip = (Clip) AudioSystem.getLine(new DataLine.Info(Clip.class, format));
