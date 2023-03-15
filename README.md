@@ -25,3 +25,4 @@ java -jar target/jodoro-<version>.jar
 * use maven
 * add icons for play & pause buttons
 * add quick settings in settings pane
+* add a second sound if timer is not respected
