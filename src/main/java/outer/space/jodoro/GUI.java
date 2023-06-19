@@ -54,7 +54,7 @@ public class GUI {
     }
 
     /**
-     * Components have been setup in the order that they appear in the GUI so it's easier to
+     * Components have been setup in the order they appear in the GUI so it's easier to
      * visualize how everything will look like.
      */
     public GUI() {
