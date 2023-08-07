@@ -110,7 +110,7 @@ public class GUI {
 
         // main panel
         sessionLabel.setText("Work (1/4)");
-        timeLabel.setText(secToMin(remTime));
+        timeLabel.setText(secsToMinsString(remTime));
         timeLabel.setFont(new Font("serif", Font.PLAIN, 80));
         timerBtn.setText("Start");
         resetBtn.setText("Reset");
@@ -183,7 +183,7 @@ public class GUI {
             if (timer != null) {
                 timer.cancel();
             }
-            timeLabel.setText(secToMin(remTime));
+            timeLabel.setText(secsToMinsString(remTime));
         }
 
         public void setupBreak() {
@@ -231,16 +231,13 @@ public class GUI {
             longBreakLength = Integer.parseInt(longBreakLengthField.getText());
             remTime = workLength;
 
-            timeLabel.setText(secToMin(remTime));
-        } else if (e.getSource() == resetBtn) {
-            pomodoroTimer.resetTimer();
-        }
-    };
+        timeLabel.setText(secsToMinsString(remTime));
+    }
 
     /**
      * Returns a {@code String} representing minutes and seconds from the given number of seconds.
      */
-    private static String secToMin(int n) {
+    private static String secsToMinsString(int n) {
         String mins = Integer.toString(n / 60);
         String secs = Integer.toString(n % 60);
 
