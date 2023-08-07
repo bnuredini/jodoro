@@ -49,7 +49,7 @@ public class GUI {
     private int remTime = workLength;
 
     private final PomodoroTimer pomodoroTimer = new PomodoroTimer();
-    private int workNum = 1;
+    private int workNum = 1; // current working session
     private boolean onBreak = false;
 
     public static MaskFormatter formatter;
@@ -66,6 +66,18 @@ public class GUI {
             System.exit(-1);
         }
     }
+
+    public ActionListener actionListener = (ActionEvent e) -> {
+        if (e.getSource() == timerBtn) {
+            handleTimerBtnClick();
+        } else if (e.getSource() == showSettingsCheckBox) {
+            settingsBottomPanel.setVisible(showSettingsCheckBox.isSelected());
+        } else if (e.getSource() == setSettingsBtn) {
+            handleSetSettingsBtnClick();
+        } else if (e.getSource() == resetBtn) {
+            pomodoroTimer.resetTimer();
+        }
+    };
 
     /**
      * Components have been set up in the order they appear in the GUI so it's easier to
@@ -148,23 +160,16 @@ public class GUI {
             timer.cancel();
         }
 
-        private void startTimer() {
+        private void startTimer(Runnable everySecond, Runnable onZero) {
             timer = new Timer();
 
             timer.scheduleAtFixedRate(new TimerTask() {
                 public void run() {
-                    remTime = remTime - 1;
-                    timeLabel.setText(secToMin(remTime));
+                    everySecond.run();
 
                     if (remTime <= 0) {
                         timer.cancel();
-                        timerBtn.setText("Start");
-
-                        if (!onBreak) {
-                            setupBreak();
-                        } else {
-                            setupWork();
-                        }
+                        onZero.run();
                     }
                 }
             }, 1000, 1000);
@@ -185,51 +190,59 @@ public class GUI {
             }
             timeLabel.setText(secsToMinsString(remTime));
         }
-
-        public void setupBreak() {
-            if (workNum == 4) {
-                sessionLabel.setText("Long Break");
-                workNum = 0;
-                remTime = longBreakLength;
-            } else {
-                sessionLabel.setText("Break");
-                remTime = breakLength;
-            }
-
-            timeLabel.setText(secToMin(remTime));
-
-            onBreak = true;
-            makeSound();
-        }
-
-        public void setupWork() {
-            sessionLabel.setText("Work (" + (++workNum) + "/4)");
-            remTime = workLength;
-            timeLabel.setText(secToMin(remTime));
-
-            onBreak = false;
-            makeSound();
-        }
     }
 
-    public ActionListener actionListener = (ActionEvent e) -> {
-        if (e.getSource() == timerBtn) {
-            if (timerBtn.getText().equals("Start")) {
-                timerBtn.setText("Pause");
-                pomodoroTimer.startTimer();
-            } else {
-                timerBtn.setText("Start");
-                pomodoroTimer.cancel();
-            }
+    private void handleTimerBtnClick() {
+        if (timerBtn.getText().equals("Start")) {
+            timerBtn.setText("Pause");
 
-            resetBtn.setEnabled(true);
-        } else if (e.getSource() == showSettingsCheckBox) {
-            settingsBottomPanel.setVisible(showSettingsCheckBox.isSelected());
-        } else if (e.getSource() == setSettingsBtn) {
-            workLength = Integer.parseInt(workLengthField.getText());
-            breakLength = Integer.parseInt(breakLengthField.getText());
-            longBreakLength = Integer.parseInt(longBreakLengthField.getText());
-            remTime = workLength;
+            pomodoroTimer.startTimer(
+                () -> { // run this every second
+                    remTime--;
+                    timeLabel.setText(secsToMinsString(remTime));
+                    System.out.printf("[%s] remTime: %d", Thread.currentThread(), remTime);
+                },
+                () -> { // run this when timer goes to zero
+                    timerBtn.setText("Start");
+
+                    if (onBreak) {
+                        onBreak = false;
+                        remTime = longBreakLength;
+                        sessionLabel.setText("Work (" + (++workNum) + "/4)");
+                        timeLabel.setText(secsToMinsString(remTime));
+
+                        makeSound();
+                    } else {
+                        onBreak = true;
+
+                        if (workNum >= 4) {
+                            remTime = longBreakLength;
+                            sessionLabel.setText("Long Break");
+                        } else {
+                            remTime = breakLength;
+                            sessionLabel.setText("Break");
+                        }
+
+                        workNum = 0;
+                        timeLabel.setText(secsToMinsString(remTime));
+
+                        makeSound();
+                    }
+                }
+            );
+        } else {
+            timerBtn.setText("Start");
+            pomodoroTimer.cancel();
+        }
+
+        resetBtn.setEnabled(true);
+    }
+
+    private void handleSetSettingsBtnClick() {
+        workLength = Integer.parseInt(workLengthField.getText());
+        breakLength = Integer.parseInt(breakLengthField.getText());
+        longBreakLength = Integer.parseInt(longBreakLengthField.getText());
+        remTime = workLength;
 
         timeLabel.setText(secsToMinsString(remTime));
     }
