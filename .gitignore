@@ -5,3 +5,4 @@ tmp/
 *.iml
 .idea/
 .DS_Store
+*.dmg
