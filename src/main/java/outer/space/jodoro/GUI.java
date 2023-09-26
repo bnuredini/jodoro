@@ -21,10 +21,12 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.text.MaskFormatter;
 
 public class GUI {
@@ -75,7 +77,7 @@ public class GUI {
         } else if (e.getSource() == setSettingsBtn) {
             handleSetSettingsBtnClick();
         } else if (e.getSource() == resetBtn) {
-            pomodoroTimer.resetTimer();
+            handleResetBtnClick();
         }
     };
 
@@ -151,16 +153,11 @@ public class GUI {
     }
 
     class PomodoroTimer {
-
         // TODO: make this public
         // TODO: use `ScheduledExecutorService` instead
         public Timer timer;
 
-        public void cancel() {
-            timer.cancel();
-        }
-
-        private void startTimer(Runnable everySecond, Runnable onZero) {
+        void startTimer(Runnable everySecond, Runnable onZero) {
             timer = new Timer();
 
             timer.scheduleAtFixedRate(new TimerTask() {
@@ -175,20 +172,8 @@ public class GUI {
             }, 1000, 1000);
         }
 
-        private void resetTimer() {
-            if (timerBtn.getText().equals("Pause")) {
-                timerBtn.setText("Start");
-            }
-
-            remTime = workLength;
-            workNum = 1;
-            onBreak = false;
-            sessionLabel.setText("Work (1/4)");
-
-            if (timer != null) {
-                timer.cancel();
-            }
-            timeLabel.setText(secsToMinsString(remTime));
+        void cancel() {
+            timer.cancel();
         }
     }
 
@@ -200,7 +185,6 @@ public class GUI {
                 () -> { // run this every second
                     remTime--;
                     timeLabel.setText(secsToMinsString(remTime));
-                    System.out.printf("[%s] remTime: %d", Thread.currentThread(), remTime);
                 },
                 () -> { // run this when timer goes to zero
                     timerBtn.setText("Start");
@@ -209,9 +193,6 @@ public class GUI {
                         onBreak = false;
                         remTime = longBreakLength;
                         sessionLabel.setText("Work (" + (++workNum) + "/4)");
-                        timeLabel.setText(secsToMinsString(remTime));
-
-                        makeSound();
                     } else {
                         onBreak = true;
 
@@ -224,10 +205,10 @@ public class GUI {
                         }
 
                         workNum = 0;
-                        timeLabel.setText(secsToMinsString(remTime));
-
-                        makeSound();
                     }
+
+                    timeLabel.setText(secsToMinsString(remTime));
+                    makeSound();
                 }
             );
         } else {
@@ -239,11 +220,26 @@ public class GUI {
     }
 
     private void handleSetSettingsBtnClick() {
+        // validate inputs
         workLength = Integer.parseInt(workLengthField.getText());
         breakLength = Integer.parseInt(breakLengthField.getText());
         longBreakLength = Integer.parseInt(longBreakLengthField.getText());
         remTime = workLength;
 
+        timeLabel.setText(secsToMinsString(remTime));
+    }
+
+    public void handleResetBtnClick() {
+        if (timerBtn.getText().equals("Pause")) {
+            timerBtn.setText("Start");
+        }
+
+        remTime = workLength;
+        workNum = 1;
+        onBreak = false;
+        sessionLabel.setText("Work (1/4)");
+
+        pomodoroTimer.cancel();
         timeLabel.setText(secsToMinsString(remTime));
     }
 
@@ -278,8 +274,8 @@ public class GUI {
                     // TODO: use a flag to determine OS
                     f = new File("/Applications/jodoro.app/Contents/app/classes/ding.wav");
                 } else {
-                    System.out.println("Using ./classes/ding.wav");
                     f = new File("./classes/ding.wav");
+                    System.out.println("Using ./classes/ding.wav");
                 }
             }
 
@@ -295,6 +291,6 @@ public class GUI {
     }
 
     public static void main(String[] args) {
-        new GUI();
+       SwingUtilities.invokeLater(GUI::new);
     }
 }
