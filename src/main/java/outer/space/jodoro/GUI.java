@@ -196,15 +196,14 @@ public class GUI {
                     } else {
                         onBreak = true;
 
-                        if (workNum >= 4) {
+                        if (workNum >= 4) { // session is over
                             remTime = longBreakLength;
                             sessionLabel.setText("Long Break");
+                            workNum = 0;
                         } else {
                             remTime = breakLength;
                             sessionLabel.setText("Break");
                         }
-
-                        workNum = 0;
                     }
 
                     timeLabel.setText(secsToMinsString(remTime));
