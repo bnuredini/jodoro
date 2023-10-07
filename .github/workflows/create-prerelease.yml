@@ -29,14 +29,14 @@ jobs:
     - name: Get version
       run: echo "PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -DforceStdout -q)" >> $GITHUB_ENV
       
-    - name: Create PKG file for Linux
+    - name: Create DEB file for Linux
       if: matrix.os == 'ubuntu-latest'      
       run: |
         jpackage \
           --input target \
           --name jodoro \
           --main-jar jodoro-$PROJECT_VERSION.jar \
-          --type pkg \
+          --type deb \
           --java-options '--enable-preview'
 
     - name: Create DMG file for MacOS
@@ -58,4 +58,4 @@ jobs:
         title: v${{ env.PROJECT_VERSION }} for ${{ matrix.os }}
         files: | 
           ./target/*.dmg
-          ./target/*.pkg
+          ./target/*.deb
