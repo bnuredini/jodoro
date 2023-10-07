@@ -1,0 +1,61 @@
+name: Create prerelease
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "development" ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+    - name: Get version
+      run: echo "PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -DforceStdout -q)" >> $GITHUB_ENV
+      
+    - name: Create PKG file for Linux
+      if: matrix.os == 'ubuntu-latest'      
+      run: |
+        jpackage \
+          --input target \
+          --name jodoro \
+          --main-jar jodoro-$PROJECT_VERSION.jar \
+          --type pkg \
+          --java-options '--enable-preview'
+
+    - name: Create DMG file for MacOS
+      if: matrix.os == 'macos-latest'      
+      run: |
+        jpackage \
+          --input target \
+          --name jodoro \
+          --main-jar jodoro-$PROJECT_VERSION.jar \
+          --type dmg \
+          --java-options '--enable-preview'
+
+    - name: Upload pre-release
+      uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN}}"
+        automatic_release_tag: "latest"
+        prerelease: true
+        title: v${{ env.PROJECT_VERSION }} for ${{ matrix.os }}
+        files: | 
+          ./target/*.dmg
+          ./target/*.pkg
