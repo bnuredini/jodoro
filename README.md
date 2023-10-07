@@ -4,13 +4,13 @@ A pomodoro desktop application.
 
 ## building locally
 
-Create the `target` directory
+First, make sure you have Java 17 installed. Then, you can create the `target` directory by running:
 
 ```
 mvn package
 ```
 
-then you can run the JAR
+This generates a JAR files under the newly-created target directory. Run the JAR using `java -jar`.
 
 ```
 java -jar target/jodoro-<version>.jar
@@ -30,7 +30,7 @@ jpackage \
    --java-options '--enable-preview'
 ```
 
-and install the application like you would with any other `.dmg` file.
+and then install the application like you would with any other `.dmg` file.
 
 ### building the installer for Linux
 
@@ -45,16 +45,19 @@ jpackage \
    --java-options '--enable-preview'
 ``` 
 
+If you need to create a `.deb` file, just use `--type deb` instead. "app-image", "exe", "msi", and
+"rpm" are also supported.
+
+You can find both installers by going to [Releases](https://github.com/bnuredini/jodoro/releases), then Assets.
+
 ## to do
 
-* keyboard shortcuts (lots of them)
-* de-clutter gui constructor
-* graphs for # of sessions 
-* add input field validation
-* fix bug occurring when input fields are modified on a running session
 * add app icon
-* use maven
-* add icons for play & pause buttons
+* fix bug occurring when input fields are modified on a running session
+* add input field validation
 * add quick settings in settings pane
+* keyboard shortcuts (lots of them)
+* graphs for # of sessions 
+* add icons for play & pause buttons
 * add a second sound if timer is not respected
-* add workflow using `jpackage`
+ 
