@@ -49,13 +49,22 @@ jobs:
           --type dmg \
           --java-options '--enable-preview'
 
-    - name: Upload pre-release
-      uses: marvinpinto/action-automatic-releases@latest
-      with:
-        repo_token: "${{ secrets.GITHUB_TOKEN}}"
-        automatic_release_tag: "latest"
+    - name: Upload pre-release for macOS
+      if: matrix.os == 'macos-latest' 
+      uses: softprops/action-gh-release@v1
+      with: 
+        name: v${{ env.PROJECT_VERSION }} for macOS
         prerelease: true
-        title: v${{ env.PROJECT_VERSION }} for ${{ matrix.os }}
-        files: | 
-          ./target/*.dmg
-          ./target/*.deb
+        tag_name: latest
+        files: |
+          *.dmg
+
+    - name: Upload pre-release for Linux
+      if: matrix.os == 'ubuntu-latest' 
+      uses: softprops/action-gh-release@v1
+      with: 
+        name: v${{ env.PROJECT_VERSION }} for Linux
+        prerelease: true
+        tag_name: latest
+        files: |
+          *.deb
