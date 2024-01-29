@@ -18,7 +18,7 @@ java -jar target/jodoro-<version>.jar
 
 ### building the installer for macOS
 
-If you're on macOS, you can install jodoro under Applications by first creating the installer with
+If you're on macOS, you can install jodoro under Applications by creating the installer with
 `jpackage`:
 
 ```
@@ -48,14 +48,17 @@ jpackage \
 If you need to create a `.deb` file, just use `--type deb` instead. "app-image", "exe", "msi", and
 "rpm" are also supported.
 
-You can find both installers by going to [Releases](https://github.com/bnuredini/jodoro/releases), then Assets.
+## releases
+
+You can find both installers in the [Releases](https://github.com/bnuredini/jodoro/releases)
+page, under Assets.
 
 ## to do
 
 * add app icon
 * fix bug occurring when input fields are modified on a running session
 * add input field validation
-* add quick settings in settings pane
+* add quick settings buttons in settings pane
 * keyboard shortcuts (lots of them)
 * graphs for # of sessions 
 * add icons for play & pause buttons
