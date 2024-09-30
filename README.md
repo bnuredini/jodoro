@@ -52,15 +52,3 @@ If you need to create a `.deb` file, just use `--type deb` instead. "app-image",
 
 You can find both installers in the [Releases](https://github.com/bnuredini/jodoro/releases)
 page, under Assets.
-
-## to do
-
-* add app icon
-* fix bug occurring when input fields are modified on a running session
-* add input field validation
-* add quick settings buttons in settings pane
-* keyboard shortcuts (lots of them)
-* graphs for # of sessions 
-* add icons for play & pause buttons
-* add a second sound if timer is not respected
- 
