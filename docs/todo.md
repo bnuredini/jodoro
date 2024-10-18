@@ -9,4 +9,5 @@
 * add icons for play & pause buttons
 * add a second sound if timer is not respected
 * add a toolbar widget for the timer
+* improve startup time
  
