@@ -2,7 +2,15 @@
 
 A pomodoro desktop application.
 
-## building locally
+## trying it out 
+
+### releases
+
+Head over to the [Releases](https://github.com/bnuredini/jodoro/releases)
+page and select the appropriate installer depending on your operating system. If you can't find your
+system listed there, you can try to build the project locally. 
+
+### building locally
 
 First, make sure you have Java 17 installed. Then, you can create the `target` directory by running:
 
@@ -18,8 +26,9 @@ java -jar target/jodoro-<version>.jar
 
 ### building the installer for macOS
 
-If you're on macOS, you can install jodoro under Applications by creating the installer with
-`jpackage`:
+If you're on macOS and want to build the installer from scrach instead of using the one provided
+under [releases](https://github.com/bnuredini/jodoro/releases), you can use `jpackage`. First make
+sure to build the project by running `mvn package`, then run  
 
 ```
 jpackage \
@@ -30,11 +39,12 @@ jpackage \
    --java-options '--enable-preview'
 ```
 
-and then install the application like you would with any other `.dmg` file.
+which will output a `.dmg` file that you can use like any other installer. After the install, you
+should be able to find jodoro under Application.
 
 ### building the installer for Linux
 
-To create a `.pkg` with `jpackage` run the following:   
+To create a `.pkg` file with `jpackage` run the following:   
 
 ```
 jpackage \
@@ -47,8 +57,3 @@ jpackage \
 
 If you need to create a `.deb` file, just use `--type deb` instead. "app-image", "exe", "msi", and
 "rpm" are also supported.
-
-## releases
-
-You can find both installers in the [Releases](https://github.com/bnuredini/jodoro/releases)
-page, under Assets.
