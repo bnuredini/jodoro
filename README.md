@@ -2,17 +2,15 @@
 
 A pomodoro desktop application.
 
-## trying it out 
-
-### installing
+## installing
 
 Head over to the [Releases](https://github.com/bnuredini/jodoro/releases) page and select the
 appropriate installer for your operating system. If you can't find your system listed there, you can
 try to build the project locally. 
 
-### building locally
+## building locally
 
-First, make sure you have Java 17 installed. Then, you can create the `target` directory by running:
+First, make sure you have Java 17 installed. Create the `target` directory by running:
 
 ```
 mvn package
@@ -24,11 +22,16 @@ This generates a JAR file under the newly-created target directory. Run the JAR 
 java -jar target/jodoro-<version>.jar
 ```
 
-(Make sure to substitue `<version>` with the version you just built.)
+(Make sure to substitute `<version>` with the version you've just built.)
 
-### building the installer for macOS
+### building an installer 
 
-If you're on macOS and want to build the installer from scrach instead of using the one provided
+If you don't want to run your local build using the JAR file, you can create a installer for your
+operating system using `jpackage`.
+
+#### macOS
+
+If you're on macOS and want to build the installer from scratch instead of using the one provided
 under [releases](https://github.com/bnuredini/jodoro/releases), you can use `jpackage`. First make
 sure to build the project by running `mvn package`, then run  
 
@@ -44,7 +47,7 @@ jpackage \
 which will output a `.dmg` file that you can use like any other installer. After the install, you
 should be able to find jodoro under Application.
 
-### building the installer for Linux
+#### Linux
 
 To create a `.pkg` file with `jpackage` run the following:   
 
