@@ -4,11 +4,11 @@ A pomodoro desktop application.
 
 ## trying it out 
 
-### releases
+### installing
 
-Head over to the [Releases](https://github.com/bnuredini/jodoro/releases)
-page and select the appropriate installer depending on your operating system. If you can't find your
-system listed there, you can try to build the project locally. 
+Head over to the [Releases](https://github.com/bnuredini/jodoro/releases) page and select the
+appropriate installer for your operating system. If you can't find your system listed there, you can
+try to build the project locally. 
 
 ### building locally
 
@@ -18,11 +18,13 @@ First, make sure you have Java 17 installed. Then, you can create the `target` d
 mvn package
 ```
 
-This generates a JAR files under the newly-created target directory. Run the JAR using `java -jar`.
+This generates a JAR file under the newly-created target directory. Run the JAR using `java -jar`.
 
 ```
 java -jar target/jodoro-<version>.jar
 ```
+
+(Make sure to substitue `<version>` with the version you just built.)
 
 ### building the installer for macOS
 
@@ -57,3 +59,7 @@ jpackage \
 
 If you need to create a `.deb` file, just use `--type deb` instead. "app-image", "exe", "msi", and
 "rpm" are also supported.
+
+## license
+
+Licensed under MIT. For more information, see the [license file](./LICENSE).
