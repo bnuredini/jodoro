@@ -45,16 +45,20 @@ public class GUI {
     private final JLabel sessionLabel = new JLabel();
     private final JLabel timeLabel = new JLabel();
 
-    private int workLength = 30 * 60;
-    private int breakLength = 5 * 60;
-    private int longBreakLength = 3 * breakLength;
-    private int remTime = workLength;
+    private int workLengthSecs = 30 * 60;
+    private int breakLengthSecs = 5 * 60;
+    private int longBreakLengthSecs = 3 * breakLengthSecs;
+    private int remTime = workLengthSecs;
 
-    private final PomodoroTimer pomodoroTimer = new PomodoroTimer();
+    public Timer timer = new Timer(); // TODO: use `ScheduledExecutorService` instead
     private int workNum = 1; // current working session
     private boolean onBreak = false;
 
     public static MaskFormatter formatter;
+
+    public static final String APP_TITLE = "jodoro";  
+    public static final int WINDOW_WIDTH  = 320;
+    public static final int WINDOW_LENGTH = 600;
 
     static {
         // TODO: remove this
@@ -86,9 +90,9 @@ public class GUI {
      * visualize how everything will look like.
      */
     public GUI() {
-        JFrame frame = new JFrame("jodoro");
+        JFrame frame = new JFrame(APP_TITLE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(350, 600);
+        frame.setSize(WINDOW_WIDTH, WINDOW_LENGTH);
 
         // customizing components of settings panel
         showSettingsCheckBox.setText("Show advanced settings");
@@ -152,36 +156,27 @@ public class GUI {
         frame.setVisible(true);
     }
 
-    class PomodoroTimer {
-        // TODO: make this public
-        // TODO: use `ScheduledExecutorService` instead
-        public Timer timer;
+    void startTimer(Runnable everySecond, Runnable onZero) {
+        timer = new Timer();
 
-        void startTimer(Runnable everySecond, Runnable onZero) {
-            timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                everySecond.run();
 
-            timer.scheduleAtFixedRate(new TimerTask() {
-                public void run() {
-                    everySecond.run();
-
-                    if (remTime <= 0) {
-                        timer.cancel();
-                        onZero.run();
-                    }
+                if (remTime <= 0) {
+                    timer.cancel();
+                    onZero.run();
                 }
-            }, 1000, 1000);
-        }
-
-        void cancel() {
-            timer.cancel();
-        }
+            }
+        }, 1000, 1000);
     }
 
     private void handleTimerBtnClick() {
-        if (timerBtn.getText().equals("Start")) {
+        if (timerBtn.getText().equals("Start")) { 
+            // TODO: keep tarck of this state w/ a boolean instead
             timerBtn.setText("Pause");
 
-            pomodoroTimer.startTimer(
+            startTimer(
                 () -> { // run this every second
                     remTime--;
                     timeLabel.setText(secsToMinsString(remTime));
@@ -191,17 +186,18 @@ public class GUI {
 
                     if (onBreak) {
                         onBreak = false;
-                        remTime = longBreakLength;
-                        sessionLabel.setText("Work (" + (++workNum) + "/4)");
-                    } else {
+                        remTime = workLengthSecs;
+                        workNum++;
+                        sessionLabel.setText(String.format("Work (%d/4)", workNum));
+                    } else { // work session is over
                         onBreak = true;
 
                         if (workNum >= 4) { // session is over
-                            remTime = longBreakLength;
+                            remTime = longBreakLengthSecs;
                             sessionLabel.setText("Long Break");
                             workNum = 0;
                         } else {
-                            remTime = breakLength;
+                            remTime = breakLengthSecs;
                             sessionLabel.setText("Break");
                         }
                     }
@@ -212,7 +208,7 @@ public class GUI {
             );
         } else {
             timerBtn.setText("Start");
-            pomodoroTimer.cancel();
+            timer.cancel();
         }
 
         resetBtn.setEnabled(true);
@@ -220,10 +216,10 @@ public class GUI {
 
     private void handleSetSettingsBtnClick() {
         // validate inputs
-        workLength = Integer.parseInt(workLengthField.getText());
-        breakLength = Integer.parseInt(breakLengthField.getText());
-        longBreakLength = Integer.parseInt(longBreakLengthField.getText());
-        remTime = workLength;
+        workLengthSecs = Integer.parseInt(workLengthField.getText());
+        breakLengthSecs = Integer.parseInt(breakLengthField.getText());
+        longBreakLengthSecs = Integer.parseInt(longBreakLengthField.getText());
+        remTime = workLengthSecs;
 
         timeLabel.setText(secsToMinsString(remTime));
     }
@@ -233,12 +229,12 @@ public class GUI {
             timerBtn.setText("Start");
         }
 
-        remTime = workLength;
+        remTime = workLengthSecs;
         workNum = 1;
         onBreak = false;
         sessionLabel.setText("Work (1/4)");
 
-        pomodoroTimer.cancel();
+        timer.cancel();
         timeLabel.setText(secsToMinsString(remTime));
     }
 
